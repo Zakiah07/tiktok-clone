@@ -4,6 +4,7 @@ import VideoCard from "../components/VideoCard";
 import { Video } from "../types";
 import React from "react";
 import { NextPage } from "next";
+import { BASE_URL } from "../utils";
 
 interface IProps {
   videos: Video[];
@@ -29,7 +30,7 @@ const Home = ({ videos }: IProps) => {
 };
 
 export const getServerSideProps = async () => {
-  const res = await fetch(`http://localhost:3000/api/post`);
+  const res = await fetch(`${BASE_URL}/api/post`);
   const data = await res.json();
   return {
     props: {

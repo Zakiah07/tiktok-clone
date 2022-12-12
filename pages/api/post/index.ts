@@ -19,3 +19,4 @@ export default async function handler(req: NextApiRequest,
             .then(() => res.status(201).json('Video Created'))
         }
     }
+    
