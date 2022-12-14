@@ -5,7 +5,7 @@ import { topicPostsQuery } from '../../../utils/queries';
 export default async function handler(req: NextApiRequest,
     res: NextApiResponse){
         if(req.method === 'GET'){
-            const {topic} = req.query;
+            const {topic} = req.query as {topic :string};
 
             const videosQuery = topicPostsQuery(topic);
 

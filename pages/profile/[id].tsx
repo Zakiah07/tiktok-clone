@@ -15,6 +15,7 @@ interface IProps {
 }
 
 const Profile = ({ data }: IProps) => {
+  const { user, userVideos, userLikedVideos } = data;
   const [showUserVideos, setShowUserVideos] = useState(true);
   const [videosList, setVideosList] = useState<Video[]>([]);
 
@@ -27,9 +28,8 @@ const Profile = ({ data }: IProps) => {
     } else {
       setVideosList(userLikedVideos);
     }
-  }, [showUserVideos]);
+  }, [showUserVideos, userVideos, userLikedVideos]);
 
-  const { user, userVideos, userLikedVideos } = data;
   console.log({ data });
 
   return (
