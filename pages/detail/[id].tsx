@@ -24,9 +24,11 @@ const Detail = ({ postDetails }: IProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const router = useRouter();
   const { userProfile }: any = useAuthStore();
+  const [comment, setComment] = useState("");
+  const [isPostingComment, setIsPostingComment] = useState(false);
 
   const onVideoClick = () => {
-    console.log("hi");
+    // console.log("hi");
     if (playing) {
       videoRef?.current?.pause();
       setPlaying(false);
@@ -54,6 +56,23 @@ const Detail = ({ postDetails }: IProps) => {
     }
   };
 
+  const addComment = async (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+
+    if (userProfile && comment) {
+      setIsPostingComment(true);
+      console.log({ comment });
+      const { data } = await axios.put(`${BASE_URL}/api/post/${post._id}`, {
+        userId: userProfile._id,
+        comment,
+      });
+
+      setPost({ ...post, comments: data.comments });
+      setComment("");
+      setIsPostingComment(false);
+    }
+  };
+
   if (!post) return null;
 
   return (
@@ -73,7 +92,7 @@ const Detail = ({ postDetails }: IProps) => {
               ref={videoRef}
               loop
               onClick={onVideoClick}
-              src={post.video.asset.url}
+              src={post.video?.asset?.url}
               className="h-full cursor-pointer"
             ></video>
           </div>
@@ -107,7 +126,7 @@ const Detail = ({ postDetails }: IProps) => {
                     width={62}
                     height={62}
                     className="rounded-full"
-                    src={post.postedBy.image}
+                    src={post.postedBy?.image}
                     alt="profile photo"
                     layout="responsive"
                   />
@@ -139,7 +158,13 @@ const Detail = ({ postDetails }: IProps) => {
               />
             )}
           </div>
-          <Comments />
+          <Comments
+            comment={comment}
+            setComment={setComment}
+            addComment={addComment}
+            comments={post.comments}
+            isPostingComment={isPostingComment}
+          />
         </div>
       </div>
     </div>
@@ -151,8 +176,8 @@ export const getServerSideProps = async ({
 }: {
   params: { id: string };
 }) => {
-  const { data } = await axios.get(`${BASE_URL}/api/post/${id}`);
-
+  const res = await fetch(`${BASE_URL}/api/post/${id}`);
+  const data = await res.json();
   return {
     props: { postDetails: data },
   };
