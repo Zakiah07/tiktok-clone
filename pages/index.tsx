@@ -29,14 +29,28 @@ const Home = ({ videos }: IProps) => {
   );
 };
 
-export const getServerSideProps = async () => {
-  const res = await fetch(`${BASE_URL}/api/post`);
-  const data = await res.json();
-  return {
-    props: {
-      videos: data,
-    },
-  };
+export const getServerSideProps = async ({
+  query: { topic },
+}: {
+  query: { topic: string };
+}) => {
+  if (topic) {
+    const response = await fetch(`${BASE_URL}/api/discover/${topic}`);
+    const data = await response.json();
+    return {
+      props: {
+        videos: data,
+      },
+    };
+  } else {
+    const response = await fetch(`${BASE_URL}/api/post`);
+    const data = await response.json();
+    return {
+      props: {
+        videos: data,
+      },
+    };
+  }
 };
 
 export default Home;
